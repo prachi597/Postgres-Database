@@ -1,0 +1,127 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPcrzxH1J1JSLzs03JrhvpD",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/prachi597/Postgres-Database/blob/main/naivebyipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "O2adM51nxej4"
+      },
+      "outputs": [],
+      "source": [
+        "\n",
+        "# Practical 9: Naive Bayes Classification\n",
+        "\n",
+        "# Step 1: Import libraries\n",
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.feature_extraction.text import CountVectorizer\n",
+        "from sklearn.naive_bayes import MultinomialNB\n",
+        "from sklearn.metrics import accuracy_score, confusion_matrix, classification_report\n",
+        "\n",
+        "# Step 2: Create email dataset\n",
+        "data = {\n",
+        "    \"Message\": [\n",
+        "        \"Win a free prize now\",\n",
+        "        \"Claim your free cash prize\",\n",
+        "        \"Congratulations you won money\",\n",
+        "        \"Free offer click now\",\n",
+        "        \"Win money and get rewards\",\n",
+        "        \"Meeting scheduled for tomorrow\",\n",
+        "        \"Please send the project report\",\n",
+        "        \"Let's have lunch today\",\n",
+        "        \"The class starts at nine\",\n",
+        "        \"Please call me after work\"\n",
+        "    ],\n",
+        "    \"Category\": [\n",
+        "        \"Spam\", \"Spam\", \"Spam\", \"Spam\", \"Spam\",\n",
+        "        \"Not Spam\", \"Not Spam\", \"Not Spam\",\n",
+        "        \"Not Spam\", \"Not Spam\"\n",
+        "    ]\n",
+        "}\n",
+        "\n",
+        "df = pd.DataFrame(data)\n",
+        "\n",
+        "print(\"Original Dataset:\")\n",
+        "print(df)\n",
+        "\n",
+        "# Step 3: Convert text into numerical features\n",
+        "vectorizer = CountVectorizer()\n",
+        "\n",
+        "X = vectorizer.fit_transform(df[\"Message\"])\n",
+        "y = df[\"Category\"]\n",
+        "\n",
+        "print(\"\\nWord Features:\")\n",
+        "print(vectorizer.get_feature_names_out())\n",
+        "\n",
+        "# Step 4: Split dataset\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    X, y, test_size=0.2, random_state=42, stratify=y\n",
+        ")\n",
+        "\n",
+        "# Step 5: Create Naive Bayes model\n",
+        "model = MultinomialNB()\n",
+        "\n",
+        "# Step 6: Train the model\n",
+        "model.fit(X_train, y_train)\n",
+        "\n",
+        "# Step 7: Predict email categories\n",
+        "y_pred = model.predict(X_test)\n",
+        "\n",
+        "print(\"\\nActual Results:\")\n",
+        "print(y_test.values)\n",
+        "\n",
+        "print(\"\\nPredicted Results:\")\n",
+        "print(y_pred)\n",
+        "\n",
+        "# Step 8: Calculate accuracy\n",
+        "accuracy = accuracy_score(y_test, y_pred)\n",
+        "\n",
+        "print(\"\\nAccuracy:\", accuracy)\n",
+        "\n",
+        "# Step 9: Display confusion matrix\n",
+        "print(\"\\nConfusion Matrix:\")\n",
+        "print(confusion_matrix(y_test, y_pred))\n",
+        "\n",
+        "# Step 10: Classification report\n",
+        "print(\"\\nClassification Report:\")\n",
+        "print(classification_report(y_test, y_pred, zero_division=0))\n",
+        "\n",
+        "# Step 11: Predict a new email\n",
+        "new_email = [\"Congratulations! You won a free prize\"]\n",
+        "\n",
+        "new_email_features = vectorizer.transform(new_email)\n",
+        "\n",
+        "prediction = model.predict(new_email_features)\n",
+        "\n",
+        "print(\"\\nNew Email Prediction:\")\n",
+        "print(prediction[0])\n"
+      ]
+    }
+  ]
+}
